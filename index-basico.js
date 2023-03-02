@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 });
 
-// Minuto 1:34:53
+// Minuto 1:55:00
 
 
 

@@ -1,5 +1,6 @@
 import AddTodo from './components/add-todo.js'
 import Modal from './components/modal.js'
+import Filters from './components/filter.js'
 
 export default class View{
     // En esta clase vamos a manejar la tabla de todos en html
@@ -15,6 +16,11 @@ export default class View{
         this.modal = new Modal();
         // Evento del modal, ponemos una función anónima para que no de conflictos el 'this'
         this.modal.onClick((id, values) => this.editTodo(id, values));
+        // Variable que hace referencia a los filtros
+        this.filters = new Filters();
+        // Evento del Filtro, ponemos una función anónima para que no de conflictos el 'this'
+        this.filters.onClick((filters) => this.filter(filters));
+
     }
 
     setModel(model){
@@ -28,6 +34,37 @@ export default class View{
         //     this.createRow(todo);
         // }
         todos.forEach((todo) => this.createRow(todo));
+    }
+
+    // Función que filtra los todo en html segun los filtros indicados
+    filter(filters){
+        // destructuring object filters
+        const {type, words} = filters;
+        // destructuring rows of table, the first row is not taken into account
+        const [, ...rows] = this.table.getElementsByTagName('tr');
+        for (const row of rows){
+            const [title, description, completed] = row.children;
+            // Variable que indica si una fila en concreto debe estar escondida
+            let shouldHide = false;
+
+            if(words){
+                shouldHide = !title.innerText.includes(words) && !description.innerText.includes(words);
+            }
+
+            const shouldBeCompleted = type === 'completed';
+            const isCompleted = completed.children[0].checked;
+
+            if (type !== 'all' && shouldBeCompleted !== isCompleted){
+                shouldHide = true;
+            }
+
+            if (shouldHide){
+                row.classList.add('d-none')
+            } else {
+                row.classList.remove('d-none');
+            }
+            
+        }
     }
 
     // Función que recibe con argumentos un titulo y una descripción y crea un todo en html
@@ -100,7 +137,12 @@ export default class View{
         // Especificamos que modal debemos mostrar con el id del modal del html 
         editBtn.setAttribute('data-target', '#modal');
         // Para que el modal nos muestre los datos pre-existentes del todo
-        editBtn.onclick = () => this.modal.setValues(todo);
+        editBtn.onclick = () => this.modal.setValues({
+            id: todo.id,
+            title: row.children[0].innerText,
+            description: row.children[1].innerText,
+            completed: row.children[2].children[0].checked,
+        });
         // Añadimos a la nueva fila el botón de eliminar
         row.children[3].appendChild(editBtn);
 

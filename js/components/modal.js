@@ -18,7 +18,7 @@ export default class Modal {
         this.todo = todo;
         this.title.value = todo.title;
         this.description.value = todo.description;
-        this.completed.checked = todo.description;
+        this.completed.checked = todo.completed;
     }
 
     // El parámetro 'callback' hace referencia a otra función ajena a esta clase (View)

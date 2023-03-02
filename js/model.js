@@ -23,9 +23,14 @@ export default class Model{
     setView(view){
         this.view = view;
     }
-
+    // Devolvemos una copia de todos los todos, siempre hay que devolver copias para que no existan problemas de referencias
     getTodos(){
-        return this.todos;
+        // const todos = [];
+        // for (const todo of this.todos){
+        //     todos.push({...todo});
+        // }
+        // return todos;
+        return this.todos.map((todo) => ({...todo}));
     }
 
     // Función que almacena los elmentos todo en el localStorage del navegador
@@ -63,6 +68,7 @@ export default class Model{
     addTodo(title, description){
         // Objeto todo
         const todo = {
+            // Definición de los atributos de la clase Todo
             id: this.currentId++,
             title,      // title: title, (Sintaxis antigua)
             description,
